@@ -1,11 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/yodfhafx/assessment/expense"
 )
 
 func main() {
-	fmt.Println("Please use server.go for main file")
-	fmt.Println("start at port:", os.Getenv("PORT"))
+	expense.InitDB()
+
+	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.POST("/expenses", expense.CreateExpensesHandler)
+	log.Fatal(e.Start(os.Getenv("PORT")))
 }
