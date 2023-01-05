@@ -19,5 +19,7 @@ func main() {
 
 	e.POST("/expenses", expense.CreateExpensesHandler)
 	e.GET("/expenses/:id", expense.GetExpenseHandler)
+	e.PUT("/expenses/:id", expense.UpdateExpenseHandler)
+
 	log.Fatal(e.Start(os.Getenv("PORT")))
 }
