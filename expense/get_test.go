@@ -8,28 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// db, mock,  := sqlmock.New()
-
-//         tags := expense.Tags
-//         mockedSql := "INSERT INTO expenses (title, amount, note, tags) values ($1, $2, $3, $4)  RETURNING id"
-//         mockedRow := sqlmock.NewRows([]string{"id"}).AddRow(1)
-
-//         mock.ExpectQuery(regexp.QuoteMeta(mockedSql)).
-//             WithArgs(expense.Title, expense.Amount, expense.Note, pq.Array(&tags)).
-//             WillReturnRows((mockedRow))
-
-// db, mock,  := sqlmock.New()
-
-//         id := 1
-//         tags := expense.Tags
-//         mockedSql := "UPDATE expenses SET title = $2, amount = $3, note = $4, tags = $5 WHERE id = $1"
-//         mockedRow := sqlmock.NewResult(1, 1)
-
-// mock.ExpectPrepare(regexp.QuoteMeta(mockedSql)).ExpectExec().
-//
-//	WithArgs(strconv.Itoa(id), expense.Title, expense.Amount, expense.Note, pq.Array(&tags)).
-//	WillReturnResult(mockedRow)
-
 func TestGetExpense(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	row := sqlmock.NewRows([]string{"id", "title", "amount", "note", "tags"}).
