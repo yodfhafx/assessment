@@ -78,6 +78,11 @@ func GetExpenseHandler(c echo.Context) error {
 }
 
 func GetAllExpensesHandler(c echo.Context) error {
+	auth := c.Request().Header.Get("Authorization")
+	if auth != "November 10, 2009wrong_token" {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+	}
+
 	stmt, err := db.Prepare("SELECT id, title, amount, note, tags FROM expenses")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: "can't prepare query all expenses detail:" + err.Error()})
