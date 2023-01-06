@@ -1,6 +1,3 @@
-//go:build integration
-// +build integration
-
 package expense
 
 import (
@@ -19,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestITCreateExpense(t *testing.T) {
+func TestITUpdateExpense(t *testing.T) {
 	eh := echo.New()
 	go func(e *echo.Echo) {
 		db, err := sql.Open("postgres", "postgresql://root:root@db/go-example-db?sslmode=disable")
@@ -29,7 +26,7 @@ func TestITCreateExpense(t *testing.T) {
 
 		h := NewApplication(db)
 
-		e.POST("/expenses", h.CreateExpense)
+		e.PUT("/expenses/:id", h.UpdateExpense)
 		e.Start(fmt.Sprintf(":%d", 2565))
 	}(eh)
 	for {
@@ -44,7 +41,7 @@ func TestITCreateExpense(t *testing.T) {
 	}
 
 	reqBody := ``
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://localhost:%d/expenses", 2565), strings.NewReader(reqBody))
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("http://localhost:%d/expenses/1", 2565), strings.NewReader(reqBody))
 	assert.NoError(t, err)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	client := http.Client{}
@@ -56,7 +53,7 @@ func TestITCreateExpense(t *testing.T) {
 	assert.NoError(t, err)
 	resp.Body.Close()
 
-	expected := "[{\"id\":2,\"title\":\"Golang\",\"amount\":200,\"note\":\"simple\",\"tags\":[\"banana\"]}]"
+	expected := "[{\"id\":1,\"title\":\"Golang\",\"amount\":500,\"note\":\"sample\",\"tags\":[\"mango\"]}]"
 
 	if assert.NoError(t, err) {
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
