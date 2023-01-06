@@ -21,9 +21,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.POST("/expenses", expense.CreateExpenseHandler)
-	e.GET("/expenses/:id", expense.GetExpenseHandler)
-	e.PUT("/expenses/:id", expense.UpdateExpenseHandler)
+	e.POST("expenses", expense.CreateExpenseHandler)
+	e.GET("expenses/:id", expense.GetExpenseHandler)
+	e.PUT("expenses/:id", expense.UpdateExpenseHandler)
 	e.GET("/expenses", expense.GetAllExpensesHandler)
 
 	go func() {
