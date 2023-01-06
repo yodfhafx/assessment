@@ -21,7 +21,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.POST("/expenses", expense.CreateExpensesHandler)
+	e.POST("/expenses", expense.CreateExpenseHandler)
 	e.GET("/expenses/:id", expense.GetExpenseHandler)
 	e.PUT("/expenses/:id", expense.UpdateExpenseHandler)
 	e.GET("/expenses", expense.GetExpensesHandler)
@@ -41,5 +41,4 @@ func main() {
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
 	}
-
 }
