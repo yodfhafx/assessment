@@ -36,3 +36,17 @@ func CreateExpenses(db *sql.DB, ex Expense) (Expense, error) {
 
 	return expense, nil
 }
+
+func (h *handler) CreateExpense(c echo.Context) error {
+	ex := Expense{}
+	var expense = []Expense{}
+	row := h.DB.QueryRow("INSERT INTO expenses (id, title, amount, note, tags) values ($1, $2, $3, $4, $5)  RETURNING id,title,amount,note,tags", 2, "Golang", 200, "simple", pq.Array([]string{"banana"}))
+
+	err := row.Scan(&ex.ID, &ex.Title, &ex.Amount, &ex.Note, pq.Array(&ex.Tags))
+	if err != nil {
+		log.Fatal(err)
+	}
+	expense = append(expense, ex)
+
+	return c.JSON(http.StatusOK, expense)
+}

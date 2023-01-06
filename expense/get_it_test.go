@@ -19,8 +19,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const serverPort = 2565
-
 func TestITGetAllExpenses(t *testing.T) {
 	eh := echo.New()
 	go func(e *echo.Echo) {
@@ -32,10 +30,10 @@ func TestITGetAllExpenses(t *testing.T) {
 		h := NewApplication(db)
 
 		e.GET("/expenses", h.GetAllExpenses)
-		e.Start(fmt.Sprintf(":%d", serverPort))
+		e.Start(fmt.Sprintf(":%d", 2565))
 	}(eh)
 	for {
-		conn, err := net.DialTimeout("tcp", fmt.Sprintf("localhost:%d", serverPort), 30*time.Second)
+		conn, err := net.DialTimeout("tcp", fmt.Sprintf("localhost:%d", 2565), 30*time.Second)
 		if err != nil {
 			log.Println(err)
 		}
@@ -46,7 +44,7 @@ func TestITGetAllExpenses(t *testing.T) {
 	}
 
 	reqBody := ``
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://localhost:%d/expenses", serverPort), strings.NewReader(reqBody))
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://localhost:%d/expenses", 2565), strings.NewReader(reqBody))
 	assert.NoError(t, err)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	client := http.Client{}
@@ -82,10 +80,10 @@ func TestITGetExpense(t *testing.T) {
 		h := NewApplication(db)
 
 		e.GET("/expenses/:id", h.GetExpense)
-		e.Start(fmt.Sprintf(":%d", serverPort))
+		e.Start(fmt.Sprintf(":%d", 2565))
 	}(eh)
 	for {
-		conn, err := net.DialTimeout("tcp", fmt.Sprintf("localhost:%d", serverPort), 30*time.Second)
+		conn, err := net.DialTimeout("tcp", fmt.Sprintf("localhost:%d", 2565), 30*time.Second)
 		if err != nil {
 			log.Println(err)
 		}
@@ -96,7 +94,7 @@ func TestITGetExpense(t *testing.T) {
 	}
 
 	reqBody := ``
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://localhost:%d/expenses/1", serverPort), strings.NewReader(reqBody))
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://localhost:%d/expenses/1", 2565), strings.NewReader(reqBody))
 	assert.NoError(t, err)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	client := http.Client{}
