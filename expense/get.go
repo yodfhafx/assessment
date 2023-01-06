@@ -9,6 +9,54 @@ import (
 	"github.com/lib/pq"
 )
 
+type handler struct {
+	DB *sql.DB
+}
+
+func NewApplication(db *sql.DB) *handler {
+	return &handler{db}
+}
+
+func (h *handler) GetAllExpenses(c echo.Context) error {
+	rows, err := h.DB.Query("SELECT * FROM expenses")
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	var nn = []Expense{}
+	var n = Expense{}
+
+	for rows.Next() {
+		err := rows.Scan(&n.ID, &n.Title, &n.Amount, &n.Note, pq.Array(&n.Tags))
+		if err != nil {
+			log.Fatal(err)
+		}
+		nn = append(nn, n)
+	}
+
+	return c.JSON(http.StatusOK, nn)
+}
+
+func (h *handler) GetExpense(c echo.Context) error {
+	expense := Expense{}
+	var expenses = []Expense{}
+	id := c.Param("id")
+	stmt, err := h.DB.Prepare("SELECT id, title, amount, note, tags FROM expenses WHERE id = $1")
+	if err != nil {
+		return err
+	}
+
+	row := stmt.QueryRow(id)
+	err = row.Scan(&expense.ID, &expense.Title, &expense.Amount, &expense.Note, pq.Array(&expense.Tags))
+	if err != nil {
+		log.Fatal(err)
+	}
+	expenses = append(expenses, expense)
+
+	return c.JSON(http.StatusOK, expenses)
+}
+
 func GetExpenseHandler(c echo.Context) error {
 	expense := Expense{}
 	id := c.Param("id")
@@ -29,7 +77,7 @@ func GetExpenseHandler(c echo.Context) error {
 	}
 }
 
-func GetExpensesHandler(c echo.Context) error {
+func GetAllExpensesHandler(c echo.Context) error {
 	stmt, err := db.Prepare("SELECT id, title, amount, note, tags FROM expenses")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: "can't prepare query all expenses detail:" + err.Error()})
